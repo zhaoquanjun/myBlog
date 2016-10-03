@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en"  ng-app="header" ng-controller="headCtrl" >
+<head>
+    <meta charset="UTF-8">
+    <meta name="keywords" content="{{item.keyword}}" />
+    <meta name="description" content="{{item.description}}" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
+    <!-- 新 Bootstrap 核心 CSS 文件 -->
+    <link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css">
+
+    <!-- 可选的Bootstrap主题文件（一般不用引入） -->
+    <link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+
+    <link rel="stylesheet" href="./css/common.css">
+
+
+    <!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
+    <script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+
+    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+    <script src="//cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
+
+    <script src="./js/react.js"></script>
+    <script src="./js/react-dom.js"></script>
+    <script src="./js/common.js"></script>
+    <script type="text/javascript" async="" src="http://static.duoshuo.com/embed.js" charset="UTF-8"></script>
+</head>
+<body>
+<div ng-include="'header.html'"  ng-cloak></div>
+<div id="container">
+    <div class="box" id="item">
+
+        <div class="box2">
+            <h1 ng-cloak class="ng-cloak">{{item.title}}</h1>
+            <h1 ng-bing="'item'"></h1>
+            <span ng-cloak class="ng-cloak">{{item.adddate}}</span>
+            <div style="margin-top:20px;" ng-bind-html="item.body|to_trusted"></div>
+        </div>
+
+        <!--<div style="text-align: center;margin:40px 0;">
+            加载中。。。
+        </div>-->
+    </div>
+    <div class="ds-thread" data-thread-key="" data-title="" data-url=""></div>
+</div>
+
+<div ng-include="'footer.html'" ng-cloak></div>
+
+<!-- 多说评论框 start -->
+
+<!-- 多说评论框 end -->
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    var duoshuoQuery = {short_name:"baoru"};
+</script>
+<!-- 多说公共JS代码 end -->
+<script src="./js/base64.js"></script>
+<!--<script type="text/babel" src="./js/detail.js"></script>-->
+<script src="http://apps.bdimg.com/libs/angular.js/1.4.6/angular.min.js"></script>
+<script>
+    var param = getUriParam();
+    var uri = "http://120.24.214.233/blog/index.php//api?c=index&a=detail&id=" + param['id'] + "&field=body"
+    var app = angular.module('header',[]);
+    app.filter(
+            'to_trusted', ['$sce', function ($sce) {
+                return function (text) {
+                    return $sce.trustAsHtml(text);
+                }
+            }]
+    )
+    app.controller('headCtrl',function($scope,$http){
+        //console.log(uri);
+        $scope.down = down;
+        $scope.toTop = toTop;
+        $http.get(uri).success(function(response){
+            var data = eval(response);
+            //console.log(data);
+            var item = eval("("+base64_decode(data['item'])+")");
+            $scope.item = item;
+            document.title = item.title;
+        })
+    })
+
+</script>
+
+</body>
+</html>
